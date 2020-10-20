@@ -1,3 +1,8 @@
+# Elastic APM Symfony Bundle
+
+This package is a continuation of the excellent work done by [goksagun](https://github.com/goksagun) at
+[goksagun/elastic-apm-bundle](https://github.com/goksagun/elastic-apm-bundle).
+
 Installation
 ============
 
@@ -7,7 +12,7 @@ Applications that use Symfony Flex
 Open a command console, enter your project directory and execute:
 
 ```console
-$ composer require goksagun/elastic-apm-bundle
+$ composer require chq81/elastic-apm-bundle
 ```
 
 Applications that don't use Symfony Flex
@@ -19,7 +24,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```console
-$ composer require goksagun/elastic-apm-bundle
+$ composer require chq81/elastic-apm-bundle
 ```
 
 This command requires you to have Composer installed globally, as explained
@@ -42,7 +47,7 @@ class AppKernel extends Kernel
     {
         $bundles = [
             // ...
-            new Goksagun\ElasticApmBundle\ElasticApmBundle(),
+            new Chq81\ElasticApmBundle\ElasticApmBundle(),
         ];
 
         // ...
@@ -60,10 +65,11 @@ Then, add the bundle configuration yml file `elastic_apm.yml` into
 
 ```yml
 elastic_apm:
-    enabled: true
-    appName: 'Symfony APM App' #Name of this application, Required
-    serverUrl: 'http://127.0.0.1:8200' #APM Server Endpoint, Default: 'http://127.0.0.1:8200'
-    secretToken: null #Secret token for APM Server, Default: null
+    enabled: true # Activate the APM Agent, default is true
+    serviceName: 'Symfony APM App' # The name of your service, required
+    environment: dev # The environment of your service
+    serverUrl: 'http://localhost:8200' # The URL for your APM service. The URL must be fully qualified, including the protocol and port.
+    secretToken: null # The secret token required to send data to your APM service
 ```
 
 Import new config file to `config.yml` into `app/config` directory:
@@ -73,3 +79,14 @@ imports:
     ...
     - { resource: elastic_apm.yml }
 ```
+
+## Contributing
+
+Contributions are welcome. Read the [contributing guide](.github/CONTRIBUTING.md) to get started.
+
+### Contributors
+
+A big thank you goes out to every [contributor](https://github.com/chq81/elastic-apm-bundle/graphs/contributors) 
+of this repo, special thanks goes out to:
+
+* [goksagun](https://github.com/goksagun)
