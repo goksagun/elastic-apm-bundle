@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "924d75a85417756a6f6602b4d467032d",
+    "content-hash": "f148f0cea61c18d4791f3c6b981ddf55",
     "packages": [
         {
             "name": "nipwaayoni/elastic-apm-php-agent",
