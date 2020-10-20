@@ -25,14 +25,15 @@
         ]
     },
     "require": {
+        "php": ">=7.1",
         "nipwaayoni/elastic-apm-php-agent": "^7.5",
-        "symfony/config": "^5.1",
-        "symfony/dependency-injection": "^5.1",
-        "symfony/http-kernel": "^5.1",
-        "symfony/security-bundle": "^5.1"
+        "symfony/config": "^4.4 || ^5.1",
+        "symfony/dependency-injection": "^4.4 || ^5.1",
+        "symfony/http-kernel": "^4.4 || ^5.1",
+        "symfony/security-bundle": "^4.4 || ^5.1"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^5.1"
+        "symfony/phpunit-bridge": "^4.4 || ^5.1"
     },
     "config": {
         "sort-packages": true
