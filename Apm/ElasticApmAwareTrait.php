@@ -1,9 +1,12 @@
 <?php
 
-namespace Goksagun\ElasticApmBundle\Apm;
+namespace Chq81\ElasticApmBundle\Apm;
 
-use PhilKra\Agent;
+use Nipwaayoni\Agent;
 
+/**
+ * This trait provides the constructor for all services making use of the APM agent.
+ */
 trait ElasticApmAwareTrait
 {
     /**
@@ -11,6 +14,9 @@ trait ElasticApmAwareTrait
      */
     protected $apm;
 
+    /**
+     * @param Agent $apm
+     */
     public function __construct(Agent $apm)
     {
         $this->apm = $apm;

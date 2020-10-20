@@ -1,47 +1,43 @@
 parameters:
     elastic_apm:
         enabled: true
-        appName: ~ #Name of this application, Required
+        serviceName: ~ # The name of your service, required
 
 services:
     elastic_apm.listener.request:
-        class: Goksagun\ElasticApmBundle\EventListener\ApmTransactionRegisterListener
+        class: Chq81\ElasticApmBundle\EventListener\ApmTransactionRegisterListener
         arguments:
             - '@elastic_apm.service.agent'
         calls:
-            -   method: setLogger
-                arguments:
-                    - '@?logger'
+            - [setSecurityHelper, ['@security.helper']]
+            - [setLogger, ['@?logger']]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 31 }
 
     elastic_apm.listener.terminate:
-        class: Goksagun\ElasticApmBundle\EventListener\ApmTransactionSenderListener
+        class: Chq81\ElasticApmBundle\EventListener\ApmTransactionSenderListener
         arguments:
             - '@elastic_apm.service.agent'
         calls:
-            -   method: setTokenStorage
-                arguments:
-                    - '@security.token_storage'
-            -   method: setLogger
-                arguments:
-                    - '@?logger'
+            - [setSecurityHelper, ['@security.helper']]
+            - [setLogger, ['@?logger']]
         tags:
             - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate, priority: -2048 }
 
     elastic_apm.listener.exception:
-        class: Goksagun\ElasticApmBundle\EventListener\ApmErrorCaptureListener
+        class: Chq81\ElasticApmBundle\EventListener\ApmErrorCaptureListener
         arguments:
             - '@elastic_apm.service.agent'
         calls:
-            -   method: setLogger
-                arguments:
-                    - '@?logger'
+            - [setSecurityHelper, ['@security.helper']]
+            - [setLogger, ['@?logger']]
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 32 }
 
     elastic_apm.service.agent:
-        class: PhilKra\Agent
-        factory: ['Goksagun\ElasticApmBundle\Apm\ElasticApmFactory', 'createAgent']
+        class: Nipwaayoni\Agent
+        factory: ['Chq81\ElasticApmBundle\Apm\ElasticApmFactory', 'createAgent']
         arguments:
             - '%elastic_apm%'
+            - null
+            - null

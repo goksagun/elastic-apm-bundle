@@ -1,12 +1,20 @@
 <?php
 
-namespace Goksagun\ElasticApmBundle\Tests\Utils;
+namespace Chq81\ElasticApmBundle\Tests\Utils;
 
-use Goksagun\ElasticApmBundle\Utils\StringHelper;
+use Chq81\ElasticApmBundle\Utils\StringHelper;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \Chq81\ElasticApmBundle\Utils\StringHelper
+ */
 class StringHelperTest extends TestCase
 {
+    /**
+     * @covers ::match
+     *
+     * @return void
+     */
     public function testMatch()
     {
         $haystack = 'Foo';
@@ -17,6 +25,11 @@ class StringHelperTest extends TestCase
         $this->assertTrue($expected);
     }
 
+    /**
+     * @covers ::match
+     *
+     * @return void
+     */
     public function testEndMatch()
     {
         $haystack = 'Fo*';
@@ -27,6 +40,11 @@ class StringHelperTest extends TestCase
         $this->assertTrue($expected);
     }
 
+    /**
+     * @covers ::match
+     *
+     * @return void
+     */
     public function testStartMatch()
     {
         $haystack = '*oo';
@@ -37,6 +55,11 @@ class StringHelperTest extends TestCase
         $this->assertTrue($expected);
     }
 
+    /**
+     * @covers ::match
+     *
+     * @return void
+     */
     public function testMiddleMatch()
     {
         $haystack = 'F*o';
@@ -47,6 +70,11 @@ class StringHelperTest extends TestCase
         $this->assertTrue($expected);
     }
 
+    /**
+     * @covers ::match
+     *
+     * @return void
+     */
     public function testComplexMatch()
     {
         $haystack = '*his *s a co**lex matc* text*';
@@ -57,6 +85,11 @@ class StringHelperTest extends TestCase
         $this->assertTrue($expected);
     }
 
+    /**
+     * @covers ::match
+     *
+     * @return void
+     */
     public function testMiddleMatchOptionalDash()
     {
         $haystack = 'F#o';
@@ -67,6 +100,11 @@ class StringHelperTest extends TestCase
         $this->assertTrue($expected);
     }
 
+    /**
+     * @covers ::match
+     *
+     * @return void
+     */
     public function testMiddleNotMatch()
     {
         $haystack = 'F*o';
@@ -77,6 +115,11 @@ class StringHelperTest extends TestCase
         $this->assertFalse($expected);
     }
 
+    /**
+     * @covers ::match
+     *
+     * @return void
+     */
     public function testComplexNotMatch()
     {
         $haystack = '*his *s a co**lex matc* text*';
@@ -87,6 +130,11 @@ class StringHelperTest extends TestCase
         $this->assertFalse($expected);
     }
 
+    /**
+     * @covers ::match
+     *
+     * @return void
+     */
     public function testLengthNotMatch()
     {
         $haystack = '*his *s a co**lex matc* text*';

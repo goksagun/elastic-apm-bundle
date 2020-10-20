@@ -1,39 +1,46 @@
 <?php
 
-namespace Goksagun\ElasticApmBundle\EventListener;
+namespace Chq81\ElasticApmBundle\EventListener;
 
-use Goksagun\ElasticApmBundle\Apm\ElasticApmAwareInterface;
-use Goksagun\ElasticApmBundle\Apm\ElasticApmAwareTrait;
-use Goksagun\ElasticApmBundle\Utils\StringHelper;
+use Chq81\ElasticApmBundle\Apm\ElasticApmAwareInterface;
+use Chq81\ElasticApmBundle\Apm\ElasticApmAwareTrait;
+use Chq81\ElasticApmBundle\Utils\StringHelper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-class ApmErrorCaptureListener implements ElasticApmAwareInterface, LoggerAwareInterface
+/**
+ * This listener listens to kernel exceptions and sends them to the APM server.
+ */
+class ApmErrorCaptureListener implements ElasticApmAwareInterface, LoggerAwareInterface, UserContextAwareInterface
 {
-    use ElasticApmAwareTrait, LoggerAwareTrait;
+    use ElasticApmAwareTrait, LoggerAwareTrait, UserContextAwareTrait;
 
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    /**
+     * @param ExceptionEvent $event
+     * @return void
+     */
+    public function onKernelException(ExceptionEvent $event)
     {
         $config = $this->apm->getConfig();
 
         $errors = $config->get('errors');
 
-        if (!$config->get('active') || !$errors['enabled']) {
+        if ($config->notEnabled() || !$errors['enabled']) {
             return;
         }
 
-        $exception = $event->getException();
+        $throwable = $event->getThrowable();
 
         if ($errors) {
             if ($excludedStatusCodes = $errors['exclude']['status_codes'] ?? []) {
-                if (!$exception instanceof HttpExceptionInterface) {
+                if (!$throwable instanceof HttpExceptionInterface) {
                     return;
                 }
 
                 foreach ($excludedStatusCodes as $excludedStatusCode) {
-                    if (StringHelper::match($excludedStatusCode, $exception->getStatusCode())) {
+                    if (StringHelper::match($excludedStatusCode, $throwable->getStatusCode())) {
                         return;
                     }
                 }
@@ -41,28 +48,33 @@ class ApmErrorCaptureListener implements ElasticApmAwareInterface, LoggerAwareIn
 
             if ($excludedExceptions = $errors['exclude']['exceptions'] ?? []) {
                 foreach ($excludedExceptions as $excludedException) {
-                    if ($exception instanceof $excludedException) {
+                    if ($throwable instanceof $excludedException) {
                         return;
                     }
                 }
             }
         }
 
-        $this->apm->captureThrowable($exception);
+        $context = [
+            'user' => $this->getUserContext()
+        ];
+
+        $this->apm->captureThrowable($throwable, $context);
 
         if (null !== $this->logger) {
-            $this->logger->info(sprintf('Errors captured for "%s"', $exception->getTraceAsString()));
+            $this->logger->info(sprintf('Errors captured for "%s"', $throwable->getTraceAsString()));
         }
 
         try {
-            $sent = $this->apm->send();
-        } catch (\Exception $e) {
+            $this->apm->send();
+            $sent = true;
+        } catch (\Throwable $e) {
             $sent = false;
         }
 
         if (null !== $this->logger) {
             $this->logger->info(
-                sprintf('Errors %s for "%s"', $sent ? 'sent' : 'not sent', $exception->getTraceAsString())
+                sprintf('Errors %s for "%s"', $sent ? 'sent' : 'not sent', $throwable->getTraceAsString())
             );
         }
     }

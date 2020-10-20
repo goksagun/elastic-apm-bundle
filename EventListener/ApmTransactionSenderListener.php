@@ -1,26 +1,30 @@
 <?php
 
-namespace Goksagun\ElasticApmBundle\EventListener;
+namespace Chq81\ElasticApmBundle\EventListener;
 
-use Goksagun\ElasticApmBundle\Apm\ElasticApmAwareInterface;
-use Goksagun\ElasticApmBundle\Apm\ElasticApmAwareTrait;
-use Goksagun\ElasticApmBundle\Security\TokenStorageAwareInterface;
-use Goksagun\ElasticApmBundle\Security\TokenStorageAwareTrait;
-use Goksagun\ElasticApmBundle\Utils\RequestProcessor;
-use PhilKra\Exception\Transaction\UnknownTransactionException;
+use Chq81\ElasticApmBundle\Apm\ElasticApmAwareInterface;
+use Chq81\ElasticApmBundle\Apm\ElasticApmAwareTrait;
+use Chq81\ElasticApmBundle\Utils\RequestProcessor;
+use Nipwaayoni\Exception\Transaction\UnknownTransactionException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\PostResponseEvent;
-use Symfony\Component\Security\Core\User\User;
+use Symfony\Component\HttpKernel\Event\TerminateEvent;
 
-class ApmTransactionSenderListener implements ElasticApmAwareInterface, TokenStorageAwareInterface, LoggerAwareInterface
+/**
+ * This listener listens to kernel terminations and sends them to the APM server.
+ */
+class ApmTransactionSenderListener implements ElasticApmAwareInterface, LoggerAwareInterface, UserContextAwareInterface
 {
-    use ElasticApmAwareTrait, TokenStorageAwareTrait, LoggerAwareTrait;
+    use ElasticApmAwareTrait, LoggerAwareTrait, UserContextAwareTrait;
 
-    public function onKernelTerminate(PostResponseEvent $event)
+    /**
+     * @param TerminateEvent $event
+     * @return void
+     */
+    public function onKernelTerminate(TerminateEvent $event)
     {
-        if (!$event->isMasterRequest() || !$this->apm->getConfig()->get('active')) {
+        if (!$event->isMasterRequest() || $this->apm->getConfig()->notEnabled()) {
             return;
         }
 
@@ -42,42 +46,17 @@ class ApmTransactionSenderListener implements ElasticApmAwareInterface, TokenSto
             $this->logger->info(sprintf('Transaction stopped for "%s"', $name));
         }
 
-        $userContext = $this->getUserContext();
-
-        $transaction->setUserContext($userContext);
+        $transaction->setUserContext($this->getUserContext());
 
         try {
-            $sent = $this->apm->send();
-        } catch (\Exception $e) {
+            $this->apm->send();
+        } catch (\Throwable $e) {
             $sent = false;
         }
 
         if (null !== $this->logger) {
             $this->logger->info(sprintf('Transaction %s for "%s"', $sent ? 'sent' : 'not sent', $name));
         }
-    }
-
-    private function getUserContext(): array
-    {
-        $userContext = [];
-        /** @var User $user */
-        if ($user = $this->getUser()) {
-            $userContext['username'] = $user->getUsername();
-
-            if (method_exists($user, 'getId')) {
-                $userContext['id'] = $user->getId();
-            }
-
-            if (method_exists($user, 'getEmail')) {
-                $userContext['email'] = $user->getEmail();
-            }
-
-            if (method_exists($user, 'getRoles')) {
-                $userContext['roles'] = $user->getRoles();
-            }
-        }
-
-        return $userContext;
     }
 
     private function getMeta(Response $response): array
