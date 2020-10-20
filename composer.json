@@ -13,22 +13,22 @@
     ],
     "license": "MIT",
     "autoload": {
-        "psr-4": { "Goksagun\\ElasticApmBundle\\": "" },
+        "psr-4": {
+            "Goksagun\\ElasticApmBundle\\": ""
+        },
         "exclude-from-classmap": [
             "/Tests/"
         ]
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/goksagun/elastic-apm-php-agent.git"
-        }
-    ],
     "require": {
-        "philkra/elastic-apm-php-agent": "dev-master"
+        "nipwaayoni/elastic-apm-php-agent": "^7.5",
+        "symfony/config": "^5.1",
+        "symfony/dependency-injection": "^5.1",
+        "symfony/http-kernel": "^5.1",
+        "symfony/security-core": "^5.1"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "*"
+        "symfony/phpunit-bridge": "^5.1"
     },
     "extra": {
         "branch-alias": {
@@ -38,5 +38,5 @@
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }
