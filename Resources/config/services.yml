@@ -22,7 +22,7 @@ services:
         calls:
             -   method: setSecurityHelper
                 arguments:
-                    - '@security'
+                    - '@security.helper'
             -   method: setLogger
                 arguments:
                     - '@?logger'
