@@ -2,7 +2,6 @@ parameters:
     elastic_apm:
         enabled: true
         serviceName: ~ # The name of your service, required
-        httpClient: ~
 
 services:
     elastic_apm.listener.request:
@@ -10,9 +9,8 @@ services:
         arguments:
             - '@elastic_apm.service.agent'
         calls:
-            -   method: setLogger
-                arguments:
-                    - '@?logger'
+            - [setSecurityHelper, ['@security.helper']]
+            - [setLogger, ['@?logger']]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 31 }
 
@@ -21,12 +19,8 @@ services:
         arguments:
             - '@elastic_apm.service.agent'
         calls:
-            -   method: setSecurityHelper
-                arguments:
-                    - '@security.helper'
-            -   method: setLogger
-                arguments:
-                    - '@?logger'
+            - [setSecurityHelper, ['@security.helper']]
+            - [setLogger, ['@?logger']]
         tags:
             - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate, priority: -2048 }
 
@@ -35,9 +29,8 @@ services:
         arguments:
             - '@elastic_apm.service.agent'
         calls:
-            -   method: setLogger
-                arguments:
-                    - '@?logger'
+            - [setSecurityHelper, ['@security.helper']]
+            - [setLogger, ['@?logger']]
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 32 }
 
