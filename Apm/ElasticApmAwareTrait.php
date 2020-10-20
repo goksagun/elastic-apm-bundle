@@ -2,7 +2,7 @@
 
 namespace Goksagun\ElasticApmBundle\Apm;
 
-use PhilKra\Agent;
+use Nipwaayoni\Agent;
 
 trait ElasticApmAwareTrait
 {
@@ -11,6 +11,9 @@ trait ElasticApmAwareTrait
      */
     protected $apm;
 
+    /**
+     * @param Agent $apm
+     */
     public function __construct(Agent $apm)
     {
         $this->apm = $apm;

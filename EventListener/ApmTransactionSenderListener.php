@@ -4,23 +4,27 @@ namespace Goksagun\ElasticApmBundle\EventListener;
 
 use Goksagun\ElasticApmBundle\Apm\ElasticApmAwareInterface;
 use Goksagun\ElasticApmBundle\Apm\ElasticApmAwareTrait;
-use Goksagun\ElasticApmBundle\Security\TokenStorageAwareInterface;
-use Goksagun\ElasticApmBundle\Security\TokenStorageAwareTrait;
 use Goksagun\ElasticApmBundle\Utils\RequestProcessor;
-use PhilKra\Exception\Transaction\UnknownTransactionException;
+use Nipwaayoni\Exception\Transaction\UnknownTransactionException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Symfony\Component\HttpKernel\Event\TerminateEvent;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\User;
 
-class ApmTransactionSenderListener implements ElasticApmAwareInterface, TokenStorageAwareInterface, LoggerAwareInterface
+class ApmTransactionSenderListener implements ElasticApmAwareInterface, LoggerAwareInterface
 {
-    use ElasticApmAwareTrait, TokenStorageAwareTrait, LoggerAwareTrait;
+    use ElasticApmAwareTrait, LoggerAwareTrait;
 
-    public function onKernelTerminate(PostResponseEvent $event)
+    /**
+     * @var Security
+     */
+    private $securityHelper;
+
+    public function onKernelTerminate(TerminateEvent $event)
     {
-        if (!$event->isMasterRequest() || !$this->apm->getConfig()->get('active')) {
+        if (!$event->isMasterRequest() || $this->apm->getConfig()->notEnabled()) {
             return;
         }
 
@@ -47,8 +51,8 @@ class ApmTransactionSenderListener implements ElasticApmAwareInterface, TokenSto
         $transaction->setUserContext($userContext);
 
         try {
-            $sent = $this->apm->send();
-        } catch (\Exception $e) {
+            $this->apm->send();
+        } catch (\Throwable $e) {
             $sent = false;
         }
 
@@ -61,7 +65,7 @@ class ApmTransactionSenderListener implements ElasticApmAwareInterface, TokenSto
     {
         $userContext = [];
         /** @var User $user */
-        if ($user = $this->getUser()) {
+        if ($user = $this->securityHelper->getUser()) {
             $userContext['username'] = $user->getUsername();
 
             if (method_exists($user, 'getId')) {
@@ -87,5 +91,16 @@ class ApmTransactionSenderListener implements ElasticApmAwareInterface, TokenSto
         ];
 
         return $meta;
+    }
+
+    /**
+     * @required
+     *
+     * @param Security $securityHelper
+     * @return void
+     */
+    public function setSecurityHelper(Security $securityHelper)
+    {
+        $this->securityHelper = $securityHelper;
     }
 }

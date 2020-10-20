@@ -6,6 +6,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RequestProcessor
 {
+    /**
+     *
+     *
+     * @param Request $request
+     * @return string
+     */
     public static function getTransactionName(Request $request): string
     {
         $routeName = $request->get('_route');

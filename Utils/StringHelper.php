@@ -4,6 +4,14 @@ namespace Goksagun\ElasticApmBundle\Utils;
 
 class StringHelper
 {
+    /**
+     *
+     *
+     * @param $haystack
+     * @param $needle
+     * @param string $dash
+     * @return bool
+     */
     public static function match($haystack, $needle, $dash = '*')
     {
         $haystack = (string)$haystack;

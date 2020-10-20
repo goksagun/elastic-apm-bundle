@@ -7,20 +7,20 @@ use Goksagun\ElasticApmBundle\Apm\ElasticApmAwareTrait;
 use Goksagun\ElasticApmBundle\Utils\StringHelper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ApmErrorCaptureListener implements ElasticApmAwareInterface, LoggerAwareInterface
 {
     use ElasticApmAwareTrait, LoggerAwareTrait;
 
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event)
     {
         $config = $this->apm->getConfig();
 
         $errors = $config->get('errors');
 
-        if (!$config->get('active') || !$errors['enabled']) {
+        if ($config->notEnabled() || !$errors['enabled']) {
             return;
         }
 
@@ -55,8 +55,8 @@ class ApmErrorCaptureListener implements ElasticApmAwareInterface, LoggerAwareIn
         }
 
         try {
-            $sent = $this->apm->send();
-        } catch (\Exception $e) {
+            $this->apm->send();
+        } catch (\Throwable $e) {
             $sent = false;
         }
 

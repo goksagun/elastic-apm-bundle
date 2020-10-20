@@ -5,22 +5,22 @@ namespace Goksagun\ElasticApmBundle\EventListener;
 use Goksagun\ElasticApmBundle\Apm\ElasticApmAwareInterface;
 use Goksagun\ElasticApmBundle\Apm\ElasticApmAwareTrait;
 use Goksagun\ElasticApmBundle\Utils\RequestProcessor;
-use PhilKra\Exception\Transaction\DuplicateTransactionNameException;
+use Nipwaayoni\Exception\Transaction\DuplicateTransactionNameException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class ApmTransactionRegisterListener implements ElasticApmAwareInterface, LoggerAwareInterface
 {
     use ElasticApmAwareTrait, LoggerAwareTrait;
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         $config = $this->apm->getConfig();
 
         $transactions = $config->get('transactions');
 
-        if (!$event->isMasterRequest() || !$config->get('active') || !$transactions['enabled']) {
+        if (!$event->isMasterRequest() || $config->notEnabled() || !$transactions['enabled']) {
             return;
         }
 

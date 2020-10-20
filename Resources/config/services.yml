@@ -1,7 +1,7 @@
 parameters:
     elastic_apm:
         enabled: true
-        appName: ~ #Name of this application, Required
+        serviceName: ~ # The name of your service, required
 
 services:
     elastic_apm.listener.request:
@@ -20,9 +20,9 @@ services:
         arguments:
             - '@elastic_apm.service.agent'
         calls:
-            -   method: setTokenStorage
+            -   method: setSecurityHelper
                 arguments:
-                    - '@security.token_storage'
+                    - '@security'
             -   method: setLogger
                 arguments:
                     - '@?logger'
@@ -41,7 +41,8 @@ services:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 32 }
 
     elastic_apm.service.agent:
-        class: PhilKra\Agent
+        class: Nipwaayoni\Agent
         factory: ['Goksagun\ElasticApmBundle\Apm\ElasticApmFactory', 'createAgent']
         arguments:
             - '%elastic_apm%'
+            - '@?logger'
