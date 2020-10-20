@@ -1,3 +1,9 @@
+## 1.0.0 (October 20, 2020)
+  - Update symfony dependencies to 5.1
+  - Introduce user context on all listeners
+  - Replace philkra/elastic-apm-php-agent with nipwaayoni/elastic-apm-php-agent
+  - Provide configuration options for the http client and logger
+
 ## 0.5.0 (June 25, 2019)
   - Enable or disable each service
 
