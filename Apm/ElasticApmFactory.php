@@ -1,16 +1,19 @@
 <?php
 
-namespace Goksagun\ElasticApmBundle\Apm;
+namespace Chq81\ElasticApmBundle\Apm;
 
 use Nipwaayoni\AgentBuilder;
 use Nipwaayoni\Config;
 use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * This class describes the factory for the Elastic APM agent.
+ */
 class ElasticApmFactory
 {
     /**
-     *
+     * Creates the APM agent.
      *
      * @param array $config
      * @param ClientInterface|null $client

@@ -1,11 +1,14 @@
 <?php
 
-namespace Goksagun\ElasticApmBundle\Utils;
+namespace Chq81\ElasticApmBundle\Utils;
 
+/**
+ * This class provides string helper functions.
+ */
 class StringHelper
 {
     /**
-     *
+     * Matches two values.
      *
      * @param $haystack
      * @param $needle

@@ -1,6 +1,6 @@
 <?php
 
-namespace Goksagun\ElasticApmBundle\DependencyInjection;
+namespace Chq81\ElasticApmBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -10,8 +10,6 @@ use Symfony\Component\DependencyInjection\Loader;
 
 /**
  * This is the class that loads and manages your bundle configuration.
- *
- * @link http://symfony.com/doc/current/cookbook/bundles/extension.html
  */
 class ElasticApmExtension extends Extension
 {

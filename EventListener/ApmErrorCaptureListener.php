@@ -1,19 +1,26 @@
 <?php
 
-namespace Goksagun\ElasticApmBundle\EventListener;
+namespace Chq81\ElasticApmBundle\EventListener;
 
-use Goksagun\ElasticApmBundle\Apm\ElasticApmAwareInterface;
-use Goksagun\ElasticApmBundle\Apm\ElasticApmAwareTrait;
-use Goksagun\ElasticApmBundle\Utils\StringHelper;
+use Chq81\ElasticApmBundle\Apm\ElasticApmAwareInterface;
+use Chq81\ElasticApmBundle\Apm\ElasticApmAwareTrait;
+use Chq81\ElasticApmBundle\Utils\StringHelper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
+/**
+ * This listener listens to kernel exceptions and sends them to the APM server.
+ */
 class ApmErrorCaptureListener implements ElasticApmAwareInterface, LoggerAwareInterface, UserContextAwareInterface
 {
     use ElasticApmAwareTrait, LoggerAwareTrait, UserContextAwareTrait;
 
+    /**
+     * @param ExceptionEvent $event
+     * @return void
+     */
     public function onKernelException(ExceptionEvent $event)
     {
         $config = $this->apm->getConfig();

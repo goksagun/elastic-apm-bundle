@@ -1,11 +1,11 @@
 <?php
 
-namespace Goksagun\ElasticApmBundle\EventListener;
+namespace Chq81\ElasticApmBundle\EventListener;
 
 use Symfony\Component\Security\Core\Security;
 
 /**
- *
+ * This interface makes services aware of the user context.
  */
 interface UserContextAwareInterface
 {

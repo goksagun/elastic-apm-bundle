@@ -1,8 +1,8 @@
 <?php
 
-namespace Goksagun\ElasticApmBundle\Tests\Utils;
+namespace Chq81\ElasticApmBundle\Tests\Utils;
 
-use Goksagun\ElasticApmBundle\Utils\StringHelper;
+use Chq81\ElasticApmBundle\Utils\StringHelper;
 use PHPUnit\Framework\TestCase;
 
 class StringHelperTest extends TestCase

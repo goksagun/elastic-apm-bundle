@@ -1,8 +1,12 @@
 {
-    "name": "goksagun/elastic-apm-bundle",
+    "name": "chq81/elastic-apm-bundle",
     "description": "Elastic APM bundle",
     "type": "symfony-bundle",
     "authors": [
+        {
+            "name": "Christoph Quadt",
+            "email": "christophquadt@gmail.com"
+        },
         {
             "name": "Burak Bolat",
             "email": "burak.bolat@metglobal.com"
@@ -14,7 +18,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Goksagun\\ElasticApmBundle\\": ""
+            "Chq81\\ElasticApmBundle\\": ""
         },
         "exclude-from-classmap": [
             "/Tests/"
@@ -30,13 +34,13 @@
     "require-dev": {
         "symfony/phpunit-bridge": "^5.1"
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "0.1.x-dev"
-        }
-    },
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "extra": {
+        "symfony": {
+            "allow-contrib": "true"
+        }
+    }
 }

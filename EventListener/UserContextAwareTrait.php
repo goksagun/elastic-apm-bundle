@@ -1,12 +1,12 @@
 <?php
 
-namespace Goksagun\ElasticApmBundle\EventListener;
+namespace Chq81\ElasticApmBundle\EventListener;
 
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\User;
 
 /**
- *
+ * This trait provides access to the user context.
  */
 trait UserContextAwareTrait
 {
@@ -16,7 +16,7 @@ trait UserContextAwareTrait
     private $securityHelper;
 
     /**
-     *
+     * Retrieves the user context.
      *
      * @return array
      */
