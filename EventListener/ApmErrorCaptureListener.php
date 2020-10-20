@@ -24,16 +24,16 @@ class ApmErrorCaptureListener implements ElasticApmAwareInterface, LoggerAwareIn
             return;
         }
 
-        $exception = $event->getException();
+        $throwable = $event->getThrowable();
 
         if ($errors) {
             if ($excludedStatusCodes = $errors['exclude']['status_codes'] ?? []) {
-                if (!$exception instanceof HttpExceptionInterface) {
+                if (!$throwable instanceof HttpExceptionInterface) {
                     return;
                 }
 
                 foreach ($excludedStatusCodes as $excludedStatusCode) {
-                    if (StringHelper::match($excludedStatusCode, $exception->getStatusCode())) {
+                    if (StringHelper::match($excludedStatusCode, $throwable->getStatusCode())) {
                         return;
                     }
                 }
@@ -41,28 +41,29 @@ class ApmErrorCaptureListener implements ElasticApmAwareInterface, LoggerAwareIn
 
             if ($excludedExceptions = $errors['exclude']['exceptions'] ?? []) {
                 foreach ($excludedExceptions as $excludedException) {
-                    if ($exception instanceof $excludedException) {
+                    if ($throwable instanceof $excludedException) {
                         return;
                     }
                 }
             }
         }
 
-        $this->apm->captureThrowable($exception);
+        $this->apm->captureThrowable($throwable);
 
         if (null !== $this->logger) {
-            $this->logger->info(sprintf('Errors captured for "%s"', $exception->getTraceAsString()));
+            $this->logger->info(sprintf('Errors captured for "%s"', $throwable->getTraceAsString()));
         }
 
         try {
             $this->apm->send();
+            $sent = true;
         } catch (\Throwable $e) {
             $sent = false;
         }
 
         if (null !== $this->logger) {
             $this->logger->info(
-                sprintf('Errors %s for "%s"', $sent ? 'sent' : 'not sent', $exception->getTraceAsString())
+                sprintf('Errors %s for "%s"', $sent ? 'sent' : 'not sent', $throwable->getTraceAsString())
             );
         }
     }

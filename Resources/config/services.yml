@@ -2,6 +2,7 @@ parameters:
     elastic_apm:
         enabled: true
         serviceName: ~ # The name of your service, required
+        httpClient: ~
 
 services:
     elastic_apm.listener.request:
@@ -45,4 +46,5 @@ services:
         factory: ['Goksagun\ElasticApmBundle\Apm\ElasticApmFactory', 'createAgent']
         arguments:
             - '%elastic_apm%'
-            - '@?logger'
+            - null
+            - null
