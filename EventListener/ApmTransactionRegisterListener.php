@@ -10,9 +10,9 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
-class ApmTransactionRegisterListener implements ElasticApmAwareInterface, LoggerAwareInterface
+class ApmTransactionRegisterListener implements ElasticApmAwareInterface, LoggerAwareInterface, UserContextAwareInterface
 {
-    use ElasticApmAwareTrait, LoggerAwareTrait;
+    use ElasticApmAwareTrait, LoggerAwareTrait, UserContextAwareTrait;
 
     public function onKernelRequest(RequestEvent $event)
     {
@@ -24,11 +24,16 @@ class ApmTransactionRegisterListener implements ElasticApmAwareInterface, Logger
             return;
         }
 
+        $context = [
+            'user' => $this->getUserContext()
+        ];
+
         try {
             $this->apm->startTransaction(
                 $name = RequestProcessor::getTransactionName(
                     $event->getRequest()
-                )
+                ),
+                $context
             );
         } catch (DuplicateTransactionNameException $e) {
             return;

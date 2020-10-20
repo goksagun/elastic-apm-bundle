@@ -10,9 +10,9 @@ use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-class ApmErrorCaptureListener implements ElasticApmAwareInterface, LoggerAwareInterface
+class ApmErrorCaptureListener implements ElasticApmAwareInterface, LoggerAwareInterface, UserContextAwareInterface
 {
-    use ElasticApmAwareTrait, LoggerAwareTrait;
+    use ElasticApmAwareTrait, LoggerAwareTrait, UserContextAwareTrait;
 
     public function onKernelException(ExceptionEvent $event)
     {
@@ -48,7 +48,11 @@ class ApmErrorCaptureListener implements ElasticApmAwareInterface, LoggerAwareIn
             }
         }
 
-        $this->apm->captureThrowable($throwable);
+        $context = [
+            'user' => $this->getUserContext()
+        ];
+
+        $this->apm->captureThrowable($throwable, $context);
 
         if (null !== $this->logger) {
             $this->logger->info(sprintf('Errors captured for "%s"', $throwable->getTraceAsString()));
