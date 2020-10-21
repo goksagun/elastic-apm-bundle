@@ -1,3 +1,9 @@
+## 1.0.2 (October 21, 2020)
+  - Add more detailed configuration options in README
+  
+## 1.0.1 (October 21, 2020)
+  - Add CI (travis.yml, updated vendor constraints)
+  
 ## 1.0.0 (October 20, 2020)
   - Update symfony dependencies to 5.1
   - Introduce user context on all listeners
