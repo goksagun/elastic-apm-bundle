@@ -16,14 +16,6 @@
         "elastic apm bundle"
     ],
     "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Chq81\\ElasticApmBundle\\": ""
-        },
-        "exclude-from-classmap": [
-            "/Tests/"
-        ]
-    },
     "require": {
         "php": ">=7.1",
         "nipwaayoni/elastic-apm-php-agent": "^7.5",
@@ -35,10 +27,19 @@
     "require-dev": {
         "symfony/phpunit-bridge": "^4.4 || ^5.1"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Chq81\\ElasticApmBundle\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
     "extra": {
         "symfony": {
             "allow-contrib": "true"
