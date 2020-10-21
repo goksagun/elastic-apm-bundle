@@ -1,4 +1,4 @@
-# Elastic APM Symfony Bundle
+# Symfony Elastic APM Bundle
 
 This package is a continuation of the excellent work done by [goksagun](https://github.com/goksagun) at
 [goksagun/elastic-apm-bundle](https://github.com/goksagun/elastic-apm-bundle).

@@ -16,6 +16,22 @@
         "elastic apm bundle"
     ],
     "license": "MIT",
+    "require": {
+        "php": ">=7.1",
+        "nipwaayoni/elastic-apm-php-agent": "^7.5",
+        "symfony/config": "^4.4 || ^5.1",
+        "symfony/dependency-injection": "^4.4 || ^5.1",
+        "symfony/http-kernel": "^4.4 || ^5.1",
+        "symfony/security-bundle": "^4.4 || ^5.1"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^4.4 || ^5.1"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
     "autoload": {
         "psr-4": {
             "Chq81\\ElasticApmBundle\\": ""
@@ -24,23 +40,10 @@
             "/Tests/"
         ]
     },
-    "require": {
-        "nipwaayoni/elastic-apm-php-agent": "^7.5",
-        "symfony/config": "^5.1",
-        "symfony/dependency-injection": "^5.1",
-        "symfony/http-kernel": "^5.1",
-        "symfony/security-core": "^5.1"
-    },
-    "require-dev": {
-        "symfony/phpunit-bridge": "^5.1"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "minimum-stability": "stable",
     "extra": {
         "symfony": {
-            "allow-contrib": "true"
+            "allow-contrib": "true",
+            "require": "5.1.*"
         }
     }
 }
