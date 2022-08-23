@@ -1,3 +1,8 @@
+## 0.6.0 (August 23, 2022)
+  - Add Guzzle http config feature and symfony 4.2+ support
+  - Allow environment modification by config
+  - Add phpunit config file
+
 ## 0.5.0 (June 25, 2019)
   - Enable or disable each service
 
