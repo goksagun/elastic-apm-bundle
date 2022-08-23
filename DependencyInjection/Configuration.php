@@ -17,8 +17,14 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('elastic_apm');
+        $treeBuilder = new TreeBuilder('elastic_apm');
+
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // symfony < 4.2 support
+            $rootNode = $treeBuilder->root('elastic_apm');
+        }
 
         $rootNode
             ->children()
@@ -35,6 +41,16 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->children()
                 ->scalarNode('serverUrl')->defaultValue('http://127.0.0.1:8200')->end()
+            ->end()
+            ->children()
+                ->arrayNode('httpClient')
+                    ->children()
+                        ->booleanNode('verify')->defaultTrue()->end()
+                    ->end()
+                    ->children()
+                        ->scalarNode('proxy')->defaultNull()->end()
+                    ->end()
+                ->end()
             ->end()
             ->children()
                 ->scalarNode('secretToken')->defaultNull()->end()
